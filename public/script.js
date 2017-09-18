@@ -6,16 +6,16 @@ $(document).ready(function(){
 
   function getAllBooks(){
     $.get('https://mutably.herokuapp.com/books', responseData => {
-      console.log("responseData.books (╯°□°）╯︵ ┻━┻", responseData.books)
       for(let book of responseData.books){
-        console.log("book.title (╯°□°）╯︵ ┻━┻", book.title)
         $('div.list-group').append(`
-          <div id='${book.id}'>
-            <ul>
-              <img src='${book.image}' height='150'></img>
-              <li>${book.title}</li>
-              <li>${book.author}</li>
-              <li>${book.releaseDate}</li>
+          <div class='book-box' id='${book.id}'>
+            <div class='thumb'>
+              <img class='img-thumbnail' src='${book.image}'></img>
+            </div>
+            <div class='book-details'>
+              <h3>${book.title}</h3>
+              <p>${book.author}</p>
+              <p>${book.releaseDate}</p>
             </ul>
           </div>
           `)

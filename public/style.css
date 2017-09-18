@@ -1,1 +1,18 @@
-/*Custom styles here*/
+.book-box{
+  height: 175px;
+}
+
+.thumb{
+  height: 150px;
+  width: 100px;
+  overflow: hidden;
+  position: relative;
+  float: left;
+  margin-right: 10px;
+}
+
+.thumb img{
+  position: absolute;
+  height: 100%;
+  overflow: hidden;
+}
