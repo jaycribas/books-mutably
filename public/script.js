@@ -25,4 +25,12 @@ $(document).ready(function(){
     event.preventDefault()
     $.post('https://mutably.herokuapp.com/books', $('#new-book').serialize())
   })
+
+  $('#add-book').on('click', event => {
+    $('.form-modal').css('display', 'block')
+  })
+
+  $('.close').on('click', event => {
+    $('.form-modal').css('display', 'none')
+  })
 });
