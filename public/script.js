@@ -1,5 +1,3 @@
-console.log("Sanity Check: JS is working!");
-
 $(document).ready(function(){
 
   getAllBooks()
@@ -21,6 +19,10 @@ $(document).ready(function(){
           `)
       }
     })
-
   }
+
+  $('#new-book').on('submit', event => {
+    event.preventDefault()
+    $.post('https://mutably.herokuapp.com/books', $('#new-book').serialize())
+  })
 });
