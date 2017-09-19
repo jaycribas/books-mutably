@@ -15,6 +15,7 @@ $(document).ready(function(){
               <p>${book.author}</p>
               <p>${book.releaseDate}</p>
               <button class='delete-book'>Delete</button>
+              <button class='edit-book'>Edit</button>
             </div>
           </div>
           `)
@@ -40,10 +41,32 @@ $(document).ready(function(){
     })
   })
 
+  // PUT
+  $(document).on('click', '.edit-book', event => {
+    let id = $(event.target).closest('div.book-box').attr('id')
+    $('.form-modal').css('display', 'block')
+    $('#edit-book').css('display', 'block')
+    $('#new-book').css('display', 'none')
+    $('#edit-book').on('submit', event => {
+      event.preventDefault()
+      $.ajax({
+        url: `https://mutably.herokuapp.com/books/${id}`,
+        type: 'PUT',
+        data: $('#edit-book').serialize(),
+        success: function(result){
+          console.log('edited the thing!', result)
+        }
+      })
+    })
+
+
+  })
 
 
   $('#add-book').on('click', event => {
     $('.form-modal').css('display', 'block')
+    $('#edit-book').css('display', 'none')
+    $('#new-book').css('display', 'block')
   })
 
   $('.close').on('click', event => {
