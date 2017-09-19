@@ -48,3 +48,7 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+form#edit-book{
+  display: none;
+}
