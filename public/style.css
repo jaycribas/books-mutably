@@ -52,3 +52,9 @@
 form#edit-book{
   display: none;
 }
+
+#add-book{
+  float: right;
+  margin-top: 8px;
+  margin-right: 8px;
+}

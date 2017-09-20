@@ -1,7 +1,7 @@
 const url = 'https://mutably.herokuapp.com/books'
 const bookDiv = book => {
   return `
-  <div class='book-box' id='${book._id}'>
+  <div class='col-md-6 book-box' id='${book._id}'>
     <div class='thumb'>
       <img class='img-thumbnail' src='${book.image}'></img>
     </div>
@@ -9,8 +9,8 @@ const bookDiv = book => {
       <h3>${book.title}</h3>
       <p>${book.author}</p>
       <p>${book.releaseDate}</p>
-      <button class='delete-book'>Delete</button>
-      <button class='edit-book'>Edit</button>
+      <button class='btn btn-sm btn-warning edit-book'>Edit</button>
+      <button class='btn btn-sm btn-danger delete-book'>Delete</button>
     </div>
   </div>
 `}
