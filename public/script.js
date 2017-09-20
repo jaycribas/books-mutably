@@ -20,16 +20,14 @@ $(document).ready(function(){
   getAllBooks()
 
   function getAllBooks(){
-    fetch(url, { method: 'get', 'Content-Type': 'application/json' })
-      .then(function(response){
-        return response.json()
-      })
-      .then(function(booksJson){
+    fetch(url)
+      .then(response => response.json())
+      .then(booksJson => {
         for(let book of booksJson.books){
           $('div.list-group').append(bookDiv(book))
         }
       })
-      .catch(function(error){
+      .catch(error => {
         console.error(error)
       })
   }
