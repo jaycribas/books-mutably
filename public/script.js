@@ -28,7 +28,6 @@ $(document).ready(function(){
       }
     })
     .catch(function(error){
-      console.log("error (╯°□°）╯︵ ┻━┻", error)
       console.error(error)
     })
 
