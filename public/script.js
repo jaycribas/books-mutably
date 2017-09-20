@@ -37,8 +37,6 @@ $(document).ready(function(){
   // POST
   $('#new-book').on('submit', event => {
     event.preventDefault()
-    let newBook = new FormData($('#new-book'))
-    console.log("newBook (╯°□°）╯︵ ┻━┻", newBook)
     $('.form-modal').css('display', 'none')
     return fetch(url, {
       method: 'post',
@@ -47,9 +45,11 @@ $(document).ready(function(){
       },
       body: $('#new-book').serialize()
     })
-    .then(function(){
-      $('div.list-group').html('')
-      getAllBooks()
+    .then(function(response){
+      return response.json()
+    })
+    .then(function(newBook){
+      $('div.list-group').append(bookDiv(newBook))
     })
     .catch(function(error){
       console.error(error)
