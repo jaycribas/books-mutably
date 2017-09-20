@@ -1,5 +1,4 @@
 const url = 'https://mutably.herokuapp.com/books'
-
 const bookDiv = book => {
   return `
   <div class='book-box' id='${book._id}'>
@@ -18,30 +17,50 @@ const bookDiv = book => {
 
 $(document).ready(function(){
   // GET
-  fetch(url, { method: 'get', 'Content-Type': 'application/json' })
-    .then(function(response){
-      return response.json()
-    })
-    .then(function(booksJson){
-      for(let book of booksJson.books){
-        $('div.list-group').append(bookDiv(book))
-      }
-    })
-    .catch(function(error){
-      console.error(error)
-    })
+  getAllBooks()
+
+  function getAllBooks(){
+    fetch(url, { method: 'get', 'Content-Type': 'application/json' })
+      .then(function(response){
+        return response.json()
+      })
+      .then(function(booksJson){
+        for(let book of booksJson.books){
+          $('div.list-group').append(bookDiv(book))
+        }
+      })
+      .catch(function(error){
+        console.error(error)
+      })
+  }
 
   // POST
   $('#new-book').on('submit', event => {
     event.preventDefault()
-    $.post(url, $('#new-book').serialize())
+    let newBook = new FormData($('#new-book'))
+    console.log("newBook (╯°□°）╯︵ ┻━┻", newBook)
+    $('.form-modal').css('display', 'none')
+    return fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+      },
+      body: $('#new-book').serialize()
+    })
+    .then(function(){
+      $('div.list-group').html('')
+      getAllBooks()
+    })
+    .catch(function(error){
+      console.error(error)
+    })
   })
 
   // DELETE
   $(document).on('click', '.delete-book', event => {
     let id = $(event.target).closest('div.book-box').attr('id')
     $.ajax({
-      url: url + id,
+      url: url + '/' + id,
       type: 'DELETE',
       success: function(result){
         console.log('Deleted the book! ', result)
