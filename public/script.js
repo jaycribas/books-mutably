@@ -1,36 +1,32 @@
-const url = 'https://mutably.herokuapp.com/books'
-const bookDiv = book => {
-  return `
-  <div class='col-md-6 book-box' id='${book._id}'>
-    <div class='thumb'>
-      <img class='img-thumbnail' src='${book.image}'></img>
-    </div>
-    <div class='book-details'>
-      <h3>${book.title}</h3>
-      <p>${book.author}</p>
-      <p>${book.releaseDate}</p>
-      <button class='btn btn-sm edit-book'>Edit</button>
-      <button class='btn btn-sm delete-book'>Delete</button>
-    </div>
-  </div>
-`}
-
 $(document).ready(function(){
-  // GET
-  getAllBooks()
+  const url = 'https://mutably.herokuapp.com/books'
+  const bookDiv = book => {
+    return `
+    <div class='col-md-6 book-box' id='${book._id}'>
+      <div class='thumb'>
+        <img class='img-thumbnail' src='${book.image}'></img>
+      </div>
+      <div class='book-details'>
+        <h3>${book.title}</h3>
+        <p>${book.author}</p>
+        <p>${book.releaseDate}</p>
+        <button class='btn btn-sm edit-book'>Edit</button>
+        <button class='btn btn-sm delete-book'>Delete</button>
+      </div>
+    </div>
+  `}
 
-  function getAllBooks(){
-    fetch(url)
-      .then(response => response.json())
-      .then(booksJson => {
-        for(let book of booksJson.books){
-          $('div.list-group').append(bookDiv(book))
-        }
-      })
-      .catch(error => {
-        console.error(error)
-      })
-  }
+  // GET
+  fetch(url)
+    .then(response => response.json())
+    .then(booksJson => {
+      for(let book of booksJson.books){
+        $('div.list-group').append(bookDiv(book))
+      }
+    })
+    .catch(error => {
+      console.error(error)
+    })
 
   // POST
   $('#new-book').on('submit', event => {
@@ -73,7 +69,7 @@ $(document).ready(function(){
     $('#edit-book').css('display', 'block')
     $('#new-book').css('display', 'none')
 
-    let id = $(event.target).closest('div.book-box').attr('id')
+    var id = $(event.target).closest('div.book-box').attr('id')
     return fetch(url + '/' + id)
       .then(response => response.json())
       .then(book => {
@@ -82,7 +78,7 @@ $(document).ready(function(){
         $("input[type='text'][name='releaseDate']").val(book.releaseDate)
         $("input[type='text'][name='image']").val(book.image)
 
-        $('#edit-book').on('submit', event => {
+        $('#edit-book').off().on('submit', event => {
           event.preventDefault()
           let options = {
             method: 'put',
@@ -91,7 +87,7 @@ $(document).ready(function(){
             },
             body: $('#edit-book').serialize()
           }
-
+          console.log("id (╯°□°）╯︵ ┻━┻", id)
           return fetch(url + '/' + id, options)
             .then(response => response.json())
             .then(book => {
