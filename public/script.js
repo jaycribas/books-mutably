@@ -69,23 +69,40 @@ $(document).ready(function(){
 
   // PUT
   $(document).on('click', '.edit-book', event => {
-    let id = $(event.target).closest('div.book-box').attr('id')
     $('.form-modal').css('display', 'block')
     $('#edit-book').css('display', 'block')
     $('#new-book').css('display', 'none')
-    $('#edit-book').on('submit', event => {
-      event.preventDefault()
-      $.ajax({
-        url: url + id,
-        type: 'PUT',
-        data: $('#edit-book').serialize(),
-        success: function(result){
-          console.log('edited the thing!', result)
-        }
-      })
+
+    let id = $(event.target).closest('div.book-box').attr('id')
+    return fetch(url + '/' + id)
+      .then(response => response.json())
+      .then(book => {
+        $("input[type='text'][name='title']").val(book.title)
+        $("input[type='text'][name='author']").val(book.author)
+        $("input[type='text'][name='releaseDate']").val(book.releaseDate)
+        $("input[type='text'][name='image']").val(book.image)
+
+        $('#edit-book').on('submit', event => {
+          event.preventDefault()
+          let options = {
+            method: 'put',
+            headers: {
+              "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: $('#edit-book').serialize()
+          }
+
+          return fetch(url + '/' + id, options)
+            .then(response => response.json())
+            .then(book => {
+              $(`#${id}`).replaceWith(bookDiv(book))
+              $('.form-modal').css('display', 'none')
+            })
+            .catch(error => console.error(error))
+        })
+
     })
   })
-
 
   $('#add-book').on('click', event => {
     $('.form-modal').css('display', 'block')
