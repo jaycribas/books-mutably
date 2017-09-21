@@ -1,3 +1,7 @@
+body{
+  background-color: #242424;
+}
+
 .book-box{
   height: 175px;
 }
@@ -57,4 +61,8 @@ form#edit-book{
   float: right;
   margin-top: 8px;
   margin-right: 8px;
+}
+
+.btn-warning, .btn-danger {
+  background-color: darkgrey;
 }
