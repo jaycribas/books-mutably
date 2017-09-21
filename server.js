@@ -1,12 +1,10 @@
 const express = require('express')
 const app = express()
+const pug = require('pug')
 
 app.use(express.static('public'))
 
-// set 'html' as the engine, using ejs's renderFile function
-var ejs = require('ejs');
-app.engine('html', ejs.renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'pug')
 
 app.get('/', (request, response) => {
   response.render('index')
