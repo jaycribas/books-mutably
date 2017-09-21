@@ -36,20 +36,21 @@ $(document).ready(function(){
   $('#new-book').on('submit', event => {
     event.preventDefault()
     $('.form-modal').css('display', 'none')
-    return fetch(url, {
+
+    let options = {
       method: 'post',
       headers: {
         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
       },
       body: $('#new-book').serialize()
-    })
-    .then(function(response){
-      return response.json()
-    })
-    .then(function(newBook){
+    }
+
+    return fetch(url, options)
+    .then(response => response.json())
+    .then(newBook => {
       $('div.list-group').append(bookDiv(newBook))
     })
-    .catch(function(error){
+    .catch(error => {
       console.error(error)
     })
   })
