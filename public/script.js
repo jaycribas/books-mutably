@@ -67,17 +67,6 @@ $(document).ready(function(){
       .catch(error => console.error(error))
   })
 
-  // $(document).on('click', '.delete-book', event => {
-  //   let id = $(event.target).closest('div.book-box').attr('id')
-  //   $.ajax({
-  //     url: url + '/' + id,
-  //     type: 'DELETE',
-  //     success: function(result){
-  //       console.log('Deleted the book! ', result)
-  //     }
-  //   })
-  // })
-
   // PUT
   $(document).on('click', '.edit-book', event => {
     let id = $(event.target).closest('div.book-box').attr('id')
