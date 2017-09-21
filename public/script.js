@@ -9,8 +9,8 @@ const bookDiv = book => {
       <h3>${book.title}</h3>
       <p>${book.author}</p>
       <p>${book.releaseDate}</p>
-      <button class='btn btn-sm btn-warning edit-book'>Edit</button>
-      <button class='btn btn-sm btn-danger delete-book'>Delete</button>
+      <button class='btn btn-sm edit-book'>Edit</button>
+      <button class='btn btn-sm delete-book'>Delete</button>
     </div>
   </div>
 `}
@@ -58,13 +58,13 @@ $(document).ready(function(){
   // DELETE
   $(document).on('click', '.delete-book', event => {
     let id = $(event.target).closest('div.book-box').attr('id')
-    $.ajax({
-      url: url + '/' + id,
-      type: 'DELETE',
-      success: function(result){
-        console.log('Deleted the book! ', result)
-      }
-    })
+    return fetch(url + '/' + id, { method: 'delete' })
+      .then(response => response.json())
+      .then(book => {
+        $(`#${id}`).remove()
+        alert(`Deleted the book ${book.title}`)
+      })
+      .catch(error => console.error(error))
   })
 
   // PUT
