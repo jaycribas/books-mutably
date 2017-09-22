@@ -1,28 +1,46 @@
 $(document).ready(function(){
   const url = 'https://mutably.herokuapp.com/books'
-  const bookDiv = book => {
-    return `
-    <div class='col-md-6 book-box' id='${book._id}'>
-      <div class='thumb'>
-        <img class='img-thumbnail' src='${book.image}'></img>
-      </div>
-      <div class='book-details'>
-        <h3>${book.title}</h3>
-        <p>${book.author}</p>
-        <p>${book.releaseDate}</p>
-        <button class='btn btn-sm edit-book'>Edit</button>
-        <button class='btn btn-sm delete-book'>Delete</button>
-      </div>
-    </div>
-  `}
 
-  // GET
-  fetch(url)
-    .then(response => response.json())
-    .then(booksJson => {
-      for(let book of booksJson.books){
-        $('div.list-group').append(bookDiv(book))
+  const Model = {
+    getAllBooks: url => fetch(url).then(res => res.json()),
+    addNewBook: function(){},
+    deleteBook: function(){},
+    updateBook: function(){}
+  }
+
+  const DOM = {
+    loadBooks: function(json){
+      for(let book of json.books){
+        $('.row').append(this.bookDivHtml(book))
       }
+    },
+    bookDivHtml: function(book){
+      return `
+      <div class='col-md-6 book-box' id='${book._id}'>
+        <div class='thumb'>
+          <img class='img-thumbnail' src='${book.image}'></img>
+        </div>
+        <div class='book-details'>
+          <h3>${book.title}</h3>
+          <p>${book.author}</p>
+          <p>${book.releaseDate}</p>
+          <button class='btn btn-sm edit-book'>Edit</button>
+          <button class='btn btn-sm delete-book'>Delete</button>
+        </div>
+      </div>
+    `},
+    addBookButton: $('#add-book'),
+    editBookButton: $(''),
+    formModal: $('')
+  }
+
+  // handle user events between view/model
+  const Controller = {}
+
+  // GET index
+  Model.getAllBooks(url)
+    .then(json => {
+      DOM.loadBooks(json)
     })
     .catch(error => {
       console.error(error)
@@ -44,7 +62,7 @@ $(document).ready(function(){
     return fetch(url, options)
     .then(response => response.json())
     .then(newBook => {
-      $('div.list-group').append(bookDiv(newBook))
+      $('.row').append(DOM.bookDivHtml(newBook))
     })
     .catch(error => {
       console.error(error)
