@@ -1,6 +1,29 @@
-$(document).ready(function(){
-  const url = 'https://mutably.herokuapp.com/books'
-  const bookDiv = book => {
+const url = 'https://mutably.herokuapp.com/books'
+
+const Model = {
+  getAllBooks: () => fetch(url).then(res => res.json()),
+
+  addNewBook: () => fetch(url, {
+    method: 'post',
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+    },
+    body: $('#new-book').serialize()
+  }).then(res => res.json()),
+
+  deleteBook: id => fetch(url + '/' + id, { method: 'delete' }),
+
+  updateBook: function(){}
+}
+
+const DOM = {
+  loadBooks: function(json){
+    for(let book of json.books){
+      $('.row').append(this.bookDivHtml(book))
+    }
+  },
+
+  bookDivHtml: function(book){
     return `
     <div class='col-md-6 book-box' id='${book._id}'>
       <div class='thumb'>
@@ -14,54 +37,60 @@ $(document).ready(function(){
         <button class='btn btn-sm delete-book'>Delete</button>
       </div>
     </div>
-  `}
+  `},
 
-  // GET
-  fetch(url)
-    .then(response => response.json())
-    .then(booksJson => {
-      for(let book of booksJson.books){
-        $('div.list-group').append(bookDiv(book))
-      }
-    })
-    .catch(error => {
-      console.error(error)
-    })
+  newBookSubmitForm: () => $('#new-book'),
+
+  showNewBookForm: function (){
+    $('.form-modal').css('display', 'block')
+    $('#edit-book').css('display', 'none')
+  },
+
+  showEditBookForm: function(){
+    $('#edit-book').css('display', 'block')
+    $('.form-modal').css('display', 'none')
+  },
+
+  removeBookDiv: id => {
+    if(confirm('Are you sure you want to delete this book?'))
+      $(`#${id}`).remove()
+  },
+
+  hideModal: () => $('.form-modal').css('display', 'none'),
+
+  editBookButton: $('')
+}
+
+// handle user events between view/model
+const Controller = {
+  newBookSubmit: event => {
+    event.preventDefault()
+    DOM.hideModal()
+    Model.addNewBook()
+      .then(book => $('.row').append(DOM.bookDivHtml(book)))
+      .catch(error => console.log(error))
+  },
+  deleteBook: event => {
+    let bookId = $(event.target).closest('div.book-box').attr('id')
+    Model.deleteBook(bookId)
+      .then(res => res.json())
+      .then(() => DOM.removeBookDiv(bookId))
+      .catch(error => console.error(error))
+  }
+}
+
+$(document).ready(function(){
+
+  // GET index
+  Model.getAllBooks()
+    .then(json => DOM.loadBooks(json))
+    .catch(error => console.error(error))
 
   // POST
-  $('#new-book').on('submit', event => {
-    event.preventDefault()
-    $('.form-modal').css('display', 'none')
-
-    let options = {
-      method: 'post',
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-      },
-      body: $('#new-book').serialize()
-    }
-
-    return fetch(url, options)
-    .then(response => response.json())
-    .then(newBook => {
-      $('div.list-group').append(bookDiv(newBook))
-    })
-    .catch(error => {
-      console.error(error)
-    })
-  })
+  $('#new-book').on('submit', Controller.newBookSubmit)
 
   // DELETE
-  $(document).on('click', '.delete-book', event => {
-    let id = $(event.target).closest('div.book-box').attr('id')
-    return fetch(url + '/' + id, { method: 'delete' })
-      .then(response => response.json())
-      .then(book => {
-        $(`#${id}`).remove()
-        alert(`Deleted the book ${book.title}`)
-      })
-      .catch(error => console.error(error))
-  })
+  $(document).on('click', '.delete-book', Controller.deleteBook)
 
   // PUT
   $(document).on('click', '.edit-book', event => {
@@ -90,7 +119,7 @@ $(document).ready(function(){
           return fetch(url + '/' + id, options)
             .then(response => response.json())
             .then(book => {
-              $(`#${id}`).replaceWith(bookDiv(book))
+              $(`#${id}`).replaceWith(DOM.bookDivHtml(book))
               $('.form-modal').css('display', 'none')
             })
             .catch(error => console.error(error))
@@ -99,13 +128,7 @@ $(document).ready(function(){
     })
   })
 
-  $('#add-book').on('click', event => {
-    $('.form-modal').css('display', 'block')
-    $('#edit-book').css('display', 'none')
-    $('#new-book').css('display', 'block')
-  })
+  $('#add-book').on('click', DOM.showNewBookForm)
 
-  $('.close').on('click', event => {
-    $('.form-modal').css('display', 'none')
-  })
+  $('.close').on('click', DOM.hideModal)
 });
