@@ -1,41 +1,62 @@
-$(document).ready(function(){
-  const url = 'https://mutably.herokuapp.com/books'
+const url = 'https://mutably.herokuapp.com/books'
 
-  const Model = {
-    getAllBooks: url => fetch(url).then(res => res.json()),
-    addNewBook: function(){},
-    deleteBook: function(){},
-    updateBook: function(){}
-  }
+const Model = {
+  getAllBooks: url => fetch(url).then(res => res.json()),
+  addNewBook: function(){},
+  deleteBook: function(){},
+  updateBook: function(){}
+}
 
-  const DOM = {
-    loadBooks: function(json){
-      for(let book of json.books){
-        $('.row').append(this.bookDivHtml(book))
-      }
-    },
-    bookDivHtml: function(book){
-      return `
-      <div class='col-md-6 book-box' id='${book._id}'>
-        <div class='thumb'>
-          <img class='img-thumbnail' src='${book.image}'></img>
-        </div>
-        <div class='book-details'>
-          <h3>${book.title}</h3>
-          <p>${book.author}</p>
-          <p>${book.releaseDate}</p>
-          <button class='btn btn-sm edit-book'>Edit</button>
-          <button class='btn btn-sm delete-book'>Delete</button>
-        </div>
+const DOM = {
+  loadBooks: function(json){
+    for(let book of json.books){
+      $('.row').append(this.bookDivHtml(book))
+    }
+  },
+
+  bookDivHtml: function(book){
+    return `
+    <div class='col-md-6 book-box' id='${book._id}'>
+      <div class='thumb'>
+        <img class='img-thumbnail' src='${book.image}'></img>
       </div>
-    `},
-    addBookButton: $('#add-book'),
-    editBookButton: $(''),
-    formModal: $('')
-  }
+      <div class='book-details'>
+        <h3>${book.title}</h3>
+        <p>${book.author}</p>
+        <p>${book.releaseDate}</p>
+        <button class='btn btn-sm edit-book'>Edit</button>
+        <button class='btn btn-sm delete-book'>Delete</button>
+      </div>
+    </div>
+  `},
 
-  // handle user events between view/model
-  const Controller = {}
+  addBookButton: '#add-book',
+  newBookSubmitButton: $('#new-book'),
+
+  showNewBookForm: function (){
+    $('.form-modal').css('display', 'block')
+    $('#edit-book').css('display', 'none')
+  },
+
+  showEditBookForm: function(){
+    $('#edit-book').css('display', 'block')
+    $('.form-modal').css('display', 'none')
+  },
+
+  editBookButton: $('')
+}
+
+// handle user events between view/model
+const Controller = {
+  addBookButton: function(){
+    DOM.addBookButton.on('click', event => {
+    showNewBookForm()
+    })
+  },
+}
+
+
+$(document).ready(function(){
 
   // GET index
   Model.getAllBooks(url)
@@ -117,11 +138,7 @@ $(document).ready(function(){
     })
   })
 
-  $('#add-book').on('click', event => {
-    $('.form-modal').css('display', 'block')
-    $('#edit-book').css('display', 'none')
-    $('#new-book').css('display', 'block')
-  })
+  $(DOM.addBookButton).on('click', DOM.showNewBookForm)
 
   $('.close').on('click', event => {
     $('.form-modal').css('display', 'none')
