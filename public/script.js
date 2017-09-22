@@ -1,9 +1,18 @@
 const url = 'https://mutably.herokuapp.com/books'
 
 const Model = {
-  getAllBooks: url => fetch(url).then(res => res.json()),
-  addNewBook: function(){},
+  getAllBooks: () => fetch(url).then(res => res.json()),
+
+  addNewBook: () => fetch(url, {
+    method: 'post',
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+    },
+    body: $('#new-book').serialize()
+  }).then(res => res.json()),
+
   deleteBook: function(){},
+
   updateBook: function(){}
 }
 
@@ -30,8 +39,7 @@ const DOM = {
     </div>
   `},
 
-  addBookButton: '#add-book',
-  newBookSubmitButton: $('#new-book'),
+  newBookSubmitForm: () => $('#new-book'),
 
   showNewBookForm: function (){
     $('.form-modal').css('display', 'block')
@@ -43,18 +51,18 @@ const DOM = {
     $('.form-modal').css('display', 'none')
   },
 
+  hideModal: () => $('.form-modal').css('display', 'none'),
+
   editBookButton: $('')
 }
 
 // handle user events between view/model
 const Controller = {
-  addBookButton: function(){
-    DOM.addBookButton.on('click', event => {
-    showNewBookForm()
-    })
-  },
+  newBookSubmit: event => {
+    let book = $('#new-book').serialize()
+    return Model.addNewBook()
+  }
 }
-
 
 $(document).ready(function(){
 
@@ -68,26 +76,13 @@ $(document).ready(function(){
     })
 
   // POST
+
   $('#new-book').on('submit', event => {
     event.preventDefault()
-    $('.form-modal').css('display', 'none')
-
-    let options = {
-      method: 'post',
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-      },
-      body: $('#new-book').serialize()
-    }
-
-    return fetch(url, options)
-    .then(response => response.json())
-    .then(newBook => {
-      $('.row').append(DOM.bookDivHtml(newBook))
-    })
-    .catch(error => {
-      console.error(error)
-    })
+    DOM.hideModal()
+    Model.addNewBook()
+      .then(book => $('.row').append(DOM.bookDivHtml(book)))
+      .catch(error => console.log(error))
   })
 
   // DELETE
@@ -138,7 +133,7 @@ $(document).ready(function(){
     })
   })
 
-  $(DOM.addBookButton).on('click', DOM.showNewBookForm)
+  $('#add-book').on('click', DOM.showNewBookForm)
 
   $('.close').on('click', event => {
     $('.form-modal').css('display', 'none')
