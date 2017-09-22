@@ -87,7 +87,6 @@ $(document).ready(function(){
             },
             body: $('#edit-book').serialize()
           }
-          console.log("id (╯°□°）╯︵ ┻━┻", id)
           return fetch(url + '/' + id, options)
             .then(response => response.json())
             .then(book => {
